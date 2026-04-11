@@ -23,29 +23,29 @@ export default function HomeScreen() {
       style={styles.background}
       blurRadius={8}>
       <View style={styles.overlay}>
-        <SearchBar onSearch={searchCity} />
 
         {/*  Search */}
 
         {/*  Loader */}
         {loading && (
-          <ActivityIndicator
+            <ActivityIndicator
             size="large"
             color="#fff"
             style={{marginTop: 20}}
-          />
+            />
         )}
 
         {/*  Error */}
         {error && (
-          <Text style={styles.errorText}>
+            <Text style={styles.errorText}>
             {error.message || 'Something went wrong'}
           </Text>
         )}
 
         {/*  Weather Card */}
         {weather && (
-          <View style={styles.cardContainer}>
+            <View style={styles.cardContainer}>
+              <SearchBar onSearch={searchCity} />
             <WeatherCard data={weather} />
 
             {/*  Button */}
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     backgroundColor: 'rgba(20,20,20,0.7)', // glass effect
     borderRadius: 20,
-    padding: 20,
+    padding: 10,
   },
 
   button: {
