@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { COLORS } from '../constants/constants';
-// import CloudIcon from '../assets/icons/CrazyCloud.svg'; 
 
 export default function WeatherCard({ data }) {
   const temp = Math.round(data.main.temp);
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
   extraRow: {
     flexDirection: 'row',
     marginTop: 10,
-    gap: 15, // spacing between humidity & wind
+    gap: 15,
   },
 
   extra: {

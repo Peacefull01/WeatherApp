@@ -1,18 +1,24 @@
 import axios from 'axios';
-import {OPEN_WEATHERMAP_API_KEY,BASE_URL} from'@env';
+import {OPEN_WEATHERMAP_API_KEY, BASE_URL} from '@env';
 
-console.log(`API_KEY: ${OPEN_WEATHERMAP_API_KEY}, BASE_URL: ${BASE_URL}`);
+// Shared API client.
+const weatherHttp = axios.create({
+  baseURL: BASE_URL,
+  timeout: 15000,
+  params: {
+    appid: OPEN_WEATHERMAP_API_KEY,
+    units: 'metric',
+  },
+});
 
-export const getCurrentWeather = async (city) => {
-  const response = await axios.get(
-    `${BASE_URL}/weather?q=${city}&appid=${OPEN_WEATHERMAP_API_KEY}&units=metric`
-  );
-  return response.data;
+// Current weather for a city name.
+export const getCurrentWeather = async city => {
+  const {data} = await weatherHttp.get('/weather', {params: {q: city}});
+  return data;
 };
 
-export const getForecast = async (city) => {
-  const response = await axios.get(
-    `${BASE_URL}/forecast?q=${city}&appid=${OPEN_WEATHERMAP_API_KEY}&units=metric`
-  );
-  return response.data;
+// 5-day forecast (3-hour steps).
+export const getForecast = async city => {
+  const {data} = await weatherHttp.get('/forecast', {params: {q: city}});
+  return data;
 };
