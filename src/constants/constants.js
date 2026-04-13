@@ -12,10 +12,16 @@ export const COLORS = {
   gradientBlue: '#3B82F6',
   gradientViolet: '#8B5CF6',
   error: '#f87171',
+  sunny: '#fbbf24',
+  rainy: '#60a5fa',
+  thunderstorm: '#94a3b8',
+  water: '#38bdf8',
+  darkBg: '#020617',
 };
 
 // Default padding / radius.
 export const SIZES = {
   padding: 16,
   radius: 16,
+  fontSize: 16,
 };

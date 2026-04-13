@@ -1,4 +1,4 @@
-import React, {useState, useCallback, forwardRef, memo} from 'react';
+import React, {useState, useCallback, forwardRef, memo, useRef,useImperativeHandle} from 'react';
 import {View, TextInput, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../constants/constants';

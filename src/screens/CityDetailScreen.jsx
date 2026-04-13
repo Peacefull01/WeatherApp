@@ -12,9 +12,10 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MCI from 'react-native-vector-icons/MaterialCommunityIcons';
-import {COLORS} from '../constants/constants';
+import {COLORS, SIZES} from '../constants/constants';
 import {getCurrentWeather, getForecast} from '../services/weatherApi';
 import {aggregateForecastByDay} from '../utils/forecastDaily';
+import ForecastRow from '../component/ForecastRow';
 
 // Country from API code.
 function countryLabel(code) {
@@ -24,7 +25,7 @@ function countryLabel(code) {
 }
 
 // Large hero icon from weather type.
-function pickHeroIcon(main, size = 72, color = '#fbbf24') {
+function pickHeroIcon(main, size = 72, color = COLORS.sunny) {
   const m = (main || '').toLowerCase();
   let name = 'partly-sunny';
   if (m === 'clear') name = 'sunny';
@@ -35,37 +36,6 @@ function pickHeroIcon(main, size = 72, color = '#fbbf24') {
     name = 'cloud';
   else name = 'cloud';
   return <Icon name={name} size={size} color={color} />;
-}
-
-// Small icon for a forecast row.
-function pickDayIcon(main, size = 28, color = COLORS.textPrimary) {
-  const m = (main || '').toLowerCase();
-  if (m === 'clear') return <Icon name="sunny" size={size} color="#fbbf24" />;
-  if (m.includes('rain') || m.includes('drizzle'))
-    return <Icon name="rainy" size={size} color="#60a5fa" />;
-  if (m.includes('thunder'))
-    return <Icon name="thunderstorm" size={size} color="#94a3b8" />;
-  return <Icon name="cloud" size={size} color={color} />;
-}
-
-// Day + date labels.
-function formatDayRow(date) {
-  const now = new Date();
-  const sameDay =
-    date.getDate() === now.getDate() &&
-    date.getMonth() === now.getMonth() &&
-    date.getFullYear() === now.getFullYear();
-
-  const dayLabel = sameDay
-    ? 'Today'
-    : date.toLocaleDateString('en-US', {weekday: 'short'});
-
-  const dateLabel = date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
-
-  return {dayLabel, dateLabel};
 }
 
 // City detail screen.
@@ -108,13 +78,13 @@ export default function CityDetailScreen() {
   }, [initialCity, load]);
 
   const onBack = useCallback(() => navigation.goBack(), [navigation]);
-  // Star is local only (not saved).
+  // star is local only (not saved).
   const onToggleStar = useCallback(() => setStarred(s => !s), []);
   const onRetry = useCallback(() => {
     load(cityName || initialCity);
   }, [load, cityName, initialCity]);
 
-  // From `current` response.
+  // from `current` response.
   const metrics = useMemo(() => {
     if (!current) return null;
     const w0 = current.weather?.[0];
@@ -133,27 +103,6 @@ export default function CityDetailScreen() {
         : null,
     };
   }, [current]);
-
-  // Forecast rows.
-  const forecastRows = useMemo(
-    () =>
-      daily.map(day => {
-        const {dayLabel, dateLabel} = formatDayRow(day.date);
-        return (
-          <View key={day.key} style={styles.dayCard}>
-            <View style={styles.dayLeft}>
-              <Text style={styles.dayName}>{dayLabel}</Text>
-              <Text style={styles.dayDate}>{dateLabel}</Text>
-            </View>
-            <View style={styles.dayMid}>{pickDayIcon(day.weatherMain)}</View>
-            <Text style={styles.dayTemps}>
-              {day.min}° / {day.max}°
-            </Text>
-          </View>
-        );
-      }),
-    [daily],
-  );
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -174,7 +123,7 @@ export default function CityDetailScreen() {
           <Icon
             name={starred ? 'star' : 'star-outline'}
             size={26}
-            color={starred ? '#fbbf24' : COLORS.textPrimary}
+            color={starred ? COLORS.sunny : COLORS.textPrimary}
           />
         </TouchableOpacity>
       </View>
@@ -227,7 +176,7 @@ export default function CityDetailScreen() {
 
           <View style={styles.statsCard}>
             <View style={styles.statCol}>
-              <MCI name="water-percent" size={26} color="#38bdf8" />
+              <MCI name="water-percent" size={26} color={COLORS.water} />
               <Text style={styles.statLabel}>Humidity</Text>
               <Text style={styles.statVal}>
                 {metrics.humidity != null ? `${metrics.humidity}%` : '—'}
@@ -255,7 +204,7 @@ export default function CityDetailScreen() {
           {daily.length === 0 && (
             <Text style={styles.noForecast}>No multi-day forecast data.</Text>
           )}
-          {forecastRows}
+          {daily.map(day => <ForecastRow key={day.key} day={day} />)}
         </ScrollView>
       )}
     </SafeAreaView>
@@ -323,7 +272,7 @@ const styles = StyleSheet.create({
   subLoc: {
     marginTop: 6,
     color: COLORS.textMuted,
-    fontSize: 16,
+    fontSize: SIZES.fontSize,
   },
   heroRow: {
     flexDirection: 'row',
@@ -332,7 +281,7 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   heroIcon: {
-    marginRight: 16,
+    marginRight: SIZES.padding,
   },
   heroRight: {
     flex: 1,
@@ -356,7 +305,7 @@ const styles = StyleSheet.create({
   statsCard: {
     flexDirection: 'row',
     backgroundColor: COLORS.surfaceMuted,
-    borderRadius: 16,
+    borderRadius: SIZES.radius,
     paddingVertical: 18,
     paddingHorizontal: 8,
     borderWidth: 1,
@@ -388,41 +337,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 14,
-  },
-  dayCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.surfaceMuted,
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(15,23,42,0.55)',
-  },
-  dayLeft: {
-    width: 88,
-  },
-  dayName: {
-    color: COLORS.textPrimary,
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  dayDate: {
-    marginTop: 4,
-    color: COLORS.textMuted,
-    fontSize: 13,
-  },
-  dayMid: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  dayTemps: {
-    width: 88,
-    textAlign: 'right',
-    color: COLORS.textPrimary,
-    fontSize: 15,
-    fontWeight: '600',
   },
   noForecast: {
     color: COLORS.textMuted,

@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     opacity: 0.22,
   },
   skyBlock: {
-    backgroundColor: '#020617',
+    backgroundColor: COLORS.darkBg,
     borderTopLeftRadius: 2,
     borderTopRightRadius: 2,
   },

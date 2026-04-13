@@ -17,7 +17,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import SearchBar from '../component/SearchBar';
 import CityHomeCard from '../component/CityHomeCard';
 import {useWeather} from '../context/WeatherContext';
-import {COLORS} from '../constants/constants';
+import {COLORS, SIZES} from '../constants/constants';
 
 // City list + search home.
 export default function HomeScreen() {
@@ -108,7 +108,7 @@ export default function HomeScreen() {
       <View style={styles.root}>
         <View style={styles.topBar}>
           <View style={styles.brand}>
-            <Icon name="partly-sunny" size={26} color="#fbbf24" />
+            <Icon name="partly-sunny" size={26} color={COLORS.sunny} />
             <Text style={styles.brandText}>Weather</Text>
           </View>
           <TouchableOpacity
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   empty: {
     alignItems: 'center',
     paddingVertical: 40,
-    paddingHorizontal: 16,
+    paddingHorizontal: SIZES.padding,
   },
   emptyTitle: {
     marginTop: 12,
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 20,
     right: 20,
-    bottom: 16,
+    bottom: SIZES.padding,
   },
   addOuter: {
     borderRadius: 28,
@@ -249,14 +249,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
   },
   addBtn: {
-    paddingVertical: 16,
+    paddingVertical: SIZES.padding,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 28,
   },
   addLabel: {
     color: COLORS.textPrimary,
-    fontSize: 16,
+    fontSize: SIZES.fontSize,
     fontWeight: '600',
   },
 });
